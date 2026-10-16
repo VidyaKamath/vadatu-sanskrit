@@ -46,6 +46,38 @@ const COURSE = [
       ['सा पुस्तकं पठति', 'sā pustakaṃ paṭhati', 'She reads a book'],
       ['सः गीतं गायति', 'saḥ gītaṃ gāyati', 'He sings a song'],
       ['भवान् किं करोति?', 'bhavān kiṃ karoti?', 'What are you doing? (to a man)'] ] } ] },
+  { sa: 'अहं गच्छामि', en: 'Pronouns and verbs', lessons: [
+    { id: 'c5l1', title: 'I, we, you', phrases: [
+      ['अहम्', 'aham', 'I'],
+      ['वयम्', 'vayam', 'We'],
+      ['त्वम्', 'tvam', 'You (informal)'],
+      ['भवान्', 'bhavān', 'You (polite, to a man)'],
+      ['भवती', 'bhavatī', 'You (polite, to a woman)'] ] },
+    { id: 'c5l2', title: 'He, she, they', phrases: [
+      ['सः', 'saḥ', 'He'],
+      ['सा', 'sā', 'She'],
+      ['तत्', 'tat', 'It / that'],
+      ['ते', 'te', 'They (men or a mixed group)'],
+      ['ताः', 'tāḥ', 'They (women)'] ] },
+    // The verb ending changes with the person; भवान्/भवती take the सः ending.
+    { id: 'c5l3', title: 'Verb endings: to go', phrases: [
+      ['अहं गच्छामि', 'ahaṃ gacchāmi', 'I go'],
+      ['त्वं गच्छसि', 'tvaṃ gacchasi', 'You go (informal)'],
+      ['भवान् गच्छति', 'bhavān gacchati', 'You go (polite, to a man)'],
+      ['वयं गच्छामः', 'vayaṃ gacchāmaḥ', 'We go'],
+      ['ते गच्छन्ति', 'te gacchanti', 'They go (men or a mixed group)'] ] },
+    { id: 'c5l4', title: 'Read, write, speak', phrases: [
+      ['अहं पठामि', 'ahaṃ paṭhāmi', 'I read'],
+      ['सा लिखति', 'sā likhati', 'She writes'],
+      ['वयं वदामः', 'vayaṃ vadāmaḥ', 'We speak'],
+      ['ते पश्यन्ति', 'te paśyanti', 'They see (men or a mixed group)'],
+      ['त्वं शृणोषि', 'tvaṃ śṛṇoṣi', 'You listen (informal)'] ] },
+    { id: 'c5l5', title: 'Come, sit, play', phrases: [
+      ['सः आगच्छति', 'saḥ āgacchati', 'He comes'],
+      ['अहम् उपविशामि', 'aham upaviśāmi', 'I sit'],
+      ['ते क्रीडन्ति', 'te krīḍanti', 'They play (men or a mixed group)'],
+      ['वयं जानीमः', 'vayaṃ jānīmaḥ', 'We know'],
+      ['सा स्वपिति', 'sā svapiti', 'She sleeps'] ] } ] },
 ];
 
 const FLAT = COURSE.flatMap(c => c.lessons.map(l => ({ ...l, chapter: c })));

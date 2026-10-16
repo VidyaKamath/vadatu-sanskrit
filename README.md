@@ -6,7 +6,7 @@ Live: https://vidyakamath.github.io/vadatu-sanskrit/
 
 ## Features
 
-- **Chapters and lessons**: 4 chapters, 7 lessons, 35 phrases. Each lesson unlocks when the one before it is finished.
+- **Chapters and lessons**: 5 chapters, 12 lessons, 60 phrases, including a chapter on pronouns and present-tense verb endings. Each lesson unlocks when the one before it is finished.
 - **Phrase preview**: each lesson opens with its 5 phrases in Devanagari, IAST transliteration and English.
 - **Practice**: every phrase comes up twice:
   - *What does this mean?* Pick the English for a Sanskrit phrase.
