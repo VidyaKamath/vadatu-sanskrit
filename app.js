@@ -120,17 +120,18 @@ let S = null; // current lesson session
 function home() {
   S = null;
   let n = 0;
+  const upNext = FLAT.find(l => !done.has(l.id)); // highlighted only; every lesson is open
   app.innerHTML = `
     <header><h1>संस्कृतम्</h1><p class="lede">Conversational Sanskrit, five phrases at a time. ${done.size} of ${FLAT.length} lessons done.</p></header>
     ${COURSE.map((c, ci) => `
       <section class="chapter">
         <header><span class="label">Chapter ${ci + 1}</span><h2>${c.sa}</h2><span class="iast">${c.en}</span></header>
         <div class="lessons">${c.lessons.map(l => {
-          const i = n++, isDone = done.has(l.id), open = i === 0 || done.has(FLAT[i - 1].id) || isDone;
-          const cls = isDone ? 'done' : open ? 'next' : '';
-          return `<button class="lesson ${cls}" data-lesson="${i}" ${open ? '' : 'disabled'}>
+          const i = n++, isDone = done.has(l.id), isNext = l === upNext;
+          const cls = isDone ? 'done' : isNext ? 'next' : '';
+          return `<button class="lesson ${cls}" data-lesson="${i}">
             <span class="dot">${isDone ? '✓' : i + 1}</span>
-            <span class="meta"><b>${l.title}</b><small>${isDone ? 'Done · practise again' : open ? '5 new phrases' : 'Finish the lesson before'}</small></span></button>`;
+            <span class="meta"><b>${l.title}</b><small>${isDone ? 'Done · practise again' : isNext ? 'Up next · 5 new phrases' : '5 new phrases'}</small></span></button>`;
         }).join('')}</div>
       </section>`).join('')}`;
 }
