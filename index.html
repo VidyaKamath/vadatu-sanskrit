@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vadatu Sanskrit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Tiro+Devanagari+Sanskrit&display=swap">
+<style>
+/* Layout: one narrow column, like a phone app; chapters stack, lessons are rows. */
+:root {
+  --bg: #f2f4f8; --surface: #ffffff; --ink: #1d2140; --muted: #5b6180; --line: #dde1ec;
+  --accent: #b85600; --accent-ink: #ffffff; --accent-soft: #fbeedd;
+  --ok: #1d7a45; --ok-bg: #e2f3e9; --bad: #ad2f27; --bad-bg: #fbe5e2;
+  --sa: "Tiro Devanagari Sanskrit", "Noto Serif Devanagari", "Kohinoor Devanagari", serif;
+  --body: "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12142a; --surface: #1b1e3a; --ink: #eceefb; --muted: #a3a8c8; --line: #2e3258;
+  --accent: #f29a45; --accent-ink: #1b1206; --accent-soft: #3a2a1a;
+  --ok: #6fd69c; --ok-bg: #173a29; --bad: #ff958b; --bad-bg: #3f1d1d; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12142a; --surface: #1b1e3a; --ink: #eceefb; --muted: #a3a8c8; --line: #2e3258;
+  --accent: #f29a45; --accent-ink: #1b1206; --accent-soft: #3a2a1a;
+  --ok: #6fd69c; --ok-bg: #173a29; --bad: #ff958b; --bad-bg: #3f1d1d; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 560px; margin: 0 auto; padding-block: 24px 40px; display: grid; gap: 24px }
+.sa { font-family: var(--sa); }
+.iast { color: var(--muted); font-size: .9rem; }
+h1 { margin: 0; font: 400 3rem/1.1 var(--sa); text-wrap: balance }
+h2 { margin: 0; font: 400 1.6rem/1.2 var(--sa) }
+.lede { margin: 4px 0 0; color: var(--muted) }
+.label { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600 }
+button { font: inherit; color: inherit; cursor: pointer }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px }
+.btn { border: 0; border-radius: 12px; padding: 12px 20px; font-weight: 700; background: var(--accent); color: var(--accent-ink) }
+.btn:disabled { opacity: .4; cursor: default }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line) }
+.speak { border: 1px solid var(--line); background: var(--surface); border-radius: 50%; width: 40px; height: 40px; flex: none; display: grid; place-items: center }
+.speak svg { width: 18px; height: 18px; fill: var(--accent) }
+
+/* home */
+.chapter { display: grid; gap: 10px }
+.chapter header { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap }
+.lessons { display: grid; gap: 8px }
+.lesson { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 14px 16px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px }
+.lesson:disabled { opacity: .5; cursor: default }
+.dot { width: 34px; height: 34px; border-radius: 50%; flex: none; display: grid; place-items: center; font-weight: 700; font-size: .9rem;
+  border: 2px solid var(--line); color: var(--muted) }
+.lesson.next .dot { border-color: var(--accent); color: var(--accent) }
+.lesson.done .dot { background: var(--ok); border-color: var(--ok); color: var(--surface) }
+.lesson .meta { min-width: 0 }
+.lesson b { display: block }
+.lesson small { color: var(--muted) }
+
+/* intro */
+.phrases { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none }
+.phrases li { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px }
+.phrases .txt { min-width: 0; flex: 1 }
+.phrases .sa { font-size: 1.35rem; display: block }
+.row { display: flex; gap: 10px; flex-wrap: wrap }
+
+/* practice */
+.top { display: flex; align-items: center; gap: 12px }
+.close { border: 0; background: none; font-size: 1.6rem; line-height: 1; color: var(--muted); padding: 4px 8px }
+.progress { flex: 1; height: 12px; background: var(--line); border-radius: 99px; overflow: hidden }
+.progress i { display: block; height: 100%; background: var(--accent); border-radius: 99px; transition: width .3s }
+.prompt { display: flex; align-items: center; gap: 14px }
+.prompt .big { font-size: 2rem; line-height: 1.3; display: block }
+.prompt .en { font-size: 1.35rem; font-weight: 600 }
+.choices { display: grid; gap: 10px }
+.choice { text-align: left; padding: 14px 16px; background: var(--surface); border: 2px solid var(--line); border-radius: 14px }
+.choice[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft) }
+.choice .sa { font-size: 1.3rem; display: block }
+.line { min-height: 64px; border-bottom: 2px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; padding-bottom: 8px }
+.bank { display: flex; flex-wrap: wrap; gap: 8px }
+.tile { padding: 8px 14px; background: var(--surface); border: 2px solid var(--line); border-bottom-width: 4px; border-radius: 12px; display: grid; text-align: center }
+.tile .sa { font-size: 1.25rem; line-height: 1.3 }
+.tile .iast { font-size: .75rem }
+.tile.used { visibility: hidden }
+.feedback { border-radius: 14px; padding: 16px; display: grid; gap: 12px; background: var(--surface); border: 1px solid var(--line) }
+.feedback.ok { background: var(--ok-bg); border-color: transparent; color: var(--ok) }
+.feedback.bad { background: var(--bad-bg); border-color: transparent; color: var(--bad) }
+.feedback p { margin: 0 }
+.feedback .btn { width: 100% }
+.done-card { text-align: center; display: grid; gap: 12px; justify-items: center; padding-block: 24px }
+.stat { font-variant-numeric: tabular-nums }
+@media (prefers-reduced-motion: reduce) { .progress i { transition: none } }
+</style>
+
+<main id="app"></main>
+
+<script>
+// Phrases: [Devanagari, IAST, English]. Spoken style (as in Samskrita Bharati classes): words kept apart, light sandhi.
+const COURSE = [
+  { sa: 'नमस्कारः', en: 'Greetings', lessons: [
+    { id: 'c1l1', title: 'Hello and goodbye', phrases: [
+      ['नमस्कारः', 'namaskāraḥ', 'Hello'],
+      ['सुप्रभातम्', 'suprabhātam', 'Good morning'],
+      ['शुभरात्रिः', 'śubharātriḥ', 'Good night'],
+      ['धन्यवादः', 'dhanyavādaḥ', 'Thank you'],
+      ['पुनः मिलामः', 'punaḥ milāmaḥ', 'See you again'] ] },
+    { id: 'c1l2', title: 'Introductions', phrases: [
+      ['मम नाम राधा', 'mama nāma rādhā', 'My name is Radha'],
+      ['भवतः नाम किम्?', 'bhavataḥ nāma kim?', 'What is your name? (to a man)'],
+      ['भवत्याः नाम किम्?', 'bhavatyāḥ nāma kim?', 'What is your name? (to a woman)'],
+      ['भवान् कथम् अस्ति?', 'bhavān katham asti?', 'How are you? (to a man)'],
+      ['अहं कुशली अस्मि', 'ahaṃ kuśalī asmi', 'I am well (said by a man)'] ] } ] },
+  { sa: 'एषः कः?', en: 'This and that', lessons: [
+    { id: 'c2l1', title: 'Who is this?', phrases: [
+      ['एषः कः?', 'eṣaḥ kaḥ?', 'Who is this? (a boy or man)'],
+      ['एषः बालकः', 'eṣaḥ bālakaḥ', 'This is a boy'],
+      ['एषा का?', 'eṣā kā?', 'Who is this? (a girl or woman)'],
+      ['एषा बालिका', 'eṣā bālikā', 'This is a girl'],
+      ['सः मम भ्राता', 'saḥ mama bhrātā', 'He is my brother'] ] },
+    { id: 'c2l2', title: 'What is this?', phrases: [
+      ['एतत् किम्?', 'etat kim?', 'What is this?'],
+      ['एतत् पुस्तकम्', 'etat pustakam', 'This is a book'],
+      ['तत् फलम्', 'tat phalam', 'That is a fruit'],
+      ['एषा लेखनी', 'eṣā lekhanī', 'This is a pen'],
+      ['तत् गृहम्', 'tat gṛham', 'That is a house'] ] } ] },
+  { sa: 'कुत्र?', en: 'Where?', lessons: [
+    { id: 'c3l1', title: 'Here and there', phrases: [
+      ['कुत्र?', 'kutra?', 'Where?'],
+      ['अत्र', 'atra', 'Here'],
+      ['तत्र', 'tatra', 'There'],
+      ['पुस्तकं कुत्र अस्ति?', 'pustakaṃ kutra asti?', 'Where is the book?'],
+      ['पुस्तकम् अत्र अस्ति', 'pustakam atra asti', 'The book is here'] ] },
+    { id: 'c3l2', title: 'Going places', phrases: [
+      ['भवान् कुत्र गच्छति?', 'bhavān kutra gacchati?', 'Where are you going? (to a man)'],
+      ['अहं गृहं गच्छामि', 'ahaṃ gṛhaṃ gacchāmi', 'I am going home'],
+      ['अहं विद्यालयं गच्छामि', 'ahaṃ vidyālayaṃ gacchāmi', 'I am going to school'],
+      ['सः आपणं गच्छति', 'saḥ āpaṇaṃ gacchati', 'He is going to the shop'],
+      ['वयम् उद्यानं गच्छामः', 'vayam udyānaṃ gacchāmaḥ', 'We are going to the park'] ] } ] },
+  { sa: 'दिनचर्या', en: 'Daily actions', lessons: [
+    { id: 'c4l1', title: 'Eat, drink, read', phrases: [
+      ['अहं जलं पिबामि', 'ahaṃ jalaṃ pibāmi', 'I drink water'],
+      ['अहं फलं खादामि', 'ahaṃ phalaṃ khādāmi', 'I eat a fruit'],
+      ['सा पुस्तकं पठति', 'sā pustakaṃ paṭhati', 'She reads a book'],
+      ['सः गीतं गायति', 'saḥ gītaṃ gāyati', 'He sings a song'],
+      ['भवान् किं करोति?', 'bhavān kiṃ karoti?', 'What are you doing? (to a man)'] ] } ] },
+];
+
+const FLAT = COURSE.flatMap(c => c.lessons.map(l => ({ ...l, chapter: c })));
+const POOL = FLAT.flatMap(l => l.phrases);
+const KEY = 'vadatu-progress';
+const done = new Set(load());
+function load() { try { return JSON.parse(localStorage.getItem(KEY)) || [] } catch { return [] } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify([...done])) } catch {} }
+
+const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]] } return a };
+const words = p => p[0].split(' ').map((w, k) => ({ w, t: p[1].split(' ')[k] || '' }));
+
+// 3 wrong options, taken from this lesson first so they are hard to guess.
+function options(lesson, p, k) {
+  const seen = new Set([p[k]]), out = [p];
+  for (const q of [...shuffle(lesson.phrases), ...shuffle(POOL)]) {
+    if (out.length === 4) break;
+    if (!seen.has(q[k])) { seen.add(q[k]); out.push(q) }
+  }
+  return shuffle(out);
+}
+
+// Every phrase twice: first recognise it, then produce it (tiles for sentences, choice for single words).
+function makeExercises(lesson) {
+  const ps = lesson.phrases;
+  const recognise = shuffle(ps).map(p => ({ type: 'mean', p, opts: options(lesson, p, 2) }));
+  const produce = shuffle(ps).map(p => {
+    if (!p[0].includes(' ')) return { type: 'say', p, opts: options(lesson, p, 0) };
+    const mine = words(p), have = new Set(mine.map(x => x.w));
+    const extra = shuffle([...lesson.phrases, ...POOL].filter(q => q !== p).flatMap(words))
+      .filter(x => !have.has(x.w) && have.add(x.w)).slice(0, 3);
+    return { type: 'build', p, tiles: shuffle([...mine, ...extra]).map((x, id) => ({ ...x, id })) };
+  });
+  return [...recognise, ...produce];
+}
+
+const canSpeak = 'speechSynthesis' in window;
+function speak(text) {
+  if (!canSpeak) return;
+  // shortcut: browsers rarely ship a Sanskrit voice, so Hindi reads the Devanagari; record real audio if pronunciation matters.
+  const u = new SpeechSynthesisUtterance(text.replace('?', ''));
+  const v = speechSynthesis.getVoices().find(v => /^(sa|hi|mr)/i.test(v.lang));
+  u.lang = v ? v.lang : 'hi-IN'; if (v) u.voice = v; u.rate = .8;
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+}
+const speakBtn = text => canSpeak ? `<button class="speak" data-say="${text}" aria-label="Play pronunciation"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg></button>` : '';
+
+const app = document.getElementById('app');
+let S = null; // current lesson session
+
+function home() {
+  S = null;
+  let n = 0;
+  app.innerHTML = `
+    <header><h1>संस्कृतम्</h1><p class="lede">Conversational Sanskrit, five phrases at a time. ${done.size} of ${FLAT.length} lessons done.</p></header>
+    ${COURSE.map((c, ci) => `
+      <section class="chapter">
+        <header><span class="label">Chapter ${ci + 1}</span><h2>${c.sa}</h2><span class="iast">${c.en}</span></header>
+        <div class="lessons">${c.lessons.map(l => {
+          const i = n++, isDone = done.has(l.id), open = i === 0 || done.has(FLAT[i - 1].id) || isDone;
+          const cls = isDone ? 'done' : open ? 'next' : '';
+          return `<button class="lesson ${cls}" data-lesson="${i}" ${open ? '' : 'disabled'}>
+            <span class="dot">${isDone ? '✓' : i + 1}</span>
+            <span class="meta"><b>${l.title}</b><small>${isDone ? 'Done · practise again' : open ? '5 new phrases' : 'Finish the lesson before'}</small></span></button>`;
+        }).join('')}</div>
+      </section>`).join('')}`;
+}
+
+function intro(i) {
+  const l = FLAT[i];
+  app.innerHTML = `
+    <header><span class="label">${l.chapter.en} · Lesson ${i + 1}</span><h2>${l.title}</h2><p class="lede">Read and listen first. Then practise.</p></header>
+    <ul class="phrases">${l.phrases.map(p => `
+      <li><span class="txt"><span class="sa">${p[0]}</span><span class="iast">${p[1]}</span><br>${p[2]}</span>${speakBtn(p[0])}</li>`).join('')}</ul>
+    <div class="row"><button class="btn" data-start="${i}">Start practice</button><button class="btn ghost" data-home>Back</button></div>`;
+}
+
+function start(i) {
+  const queue = makeExercises(FLAT[i]);
+  S = { i, queue, total: queue.length, right: 0, mistakes: 0, pick: null, line: [], checked: false };
+  exercise();
+}
+
+function exercise() {
+  const e = S.queue[0], p = e.p;
+  const prompt = {
+    mean: `<p class="label">What does this mean?</p><div class="prompt">${speakBtn(p[0])}<div><span class="sa big">${p[0]}</span><span class="iast">${p[1]}</span></div></div>`,
+    say: `<p class="label">Pick the Sanskrit</p><div class="prompt"><span class="en">${p[2]}</span></div>`,
+    build: `<p class="label">Build it in Sanskrit</p><div class="prompt"><span class="en">${p[2]}</span></div>`,
+  }[e.type];
+  let answer;
+  if (e.type === 'build') {
+    answer = `<div class="line" aria-label="Your sentence">${S.line.map(id => tile(e.tiles[id], 'out')).join('')}</div>
+      <div class="bank">${e.tiles.map(t => tile(t, 'in', S.line.includes(t.id))).join('')}</div>`;
+  } else {
+    answer = `<div class="choices">${e.opts.map((q, k) => `<button class="choice" data-pick="${k}" aria-pressed="${S.pick === k}">${
+      e.type === 'mean' ? q[2] : `<span class="sa">${q[0]}</span><span class="iast">${q[1]}</span>`}</button>`).join('')}</div>`;
+  }
+  const ready = e.type === 'build' ? S.line.length > 0 : S.pick !== null;
+  app.innerHTML = `
+    <div class="top"><button class="close" data-home aria-label="Quit lesson">×</button>
+      <div class="progress" role="progressbar" aria-valuenow="${S.right}" aria-valuemax="${S.total}"><i style="width:${S.right / S.total * 100}%"></i></div></div>
+    ${prompt}${answer}
+    <div class="feedback" id="fb"><button class="btn" data-check ${ready ? '' : 'disabled'}>Check</button></div>`;
+}
+const tile = (t, side, used) => `<button class="tile${used ? ' used' : ''}" data-${side}="${t.id}" ${used ? 'tabindex="-1" aria-hidden="true"' : ''}><span class="sa">${t.w}</span><span class="iast">${t.t}</span></button>`;
+
+function isRight(e, S) {
+  if (e.type === 'build') return S.line.map(id => e.tiles[id].w).join(' ') === e.p[0];
+  return e.opts[S.pick] === e.p;
+}
+
+function check() {
+  const e = S.queue[0], ok = isRight(e, S);
+  S.checked = true;
+  if (ok) { S.right++; S.queue.shift() } else { S.mistakes++; S.queue.push(S.queue.shift()) } // wrong ones come back at the end
+  const fb = document.getElementById('fb');
+  fb.className = 'feedback ' + (ok ? 'ok' : 'bad');
+  fb.innerHTML = `<p><b>${ok ? 'Correct!' : 'Not quite. The answer is:'}</b></p>
+    ${ok ? '' : `<p><span class="sa" style="font-size:1.3rem">${e.p[0]}</span> · ${e.p[1]}<br>${e.p[2]}</p>`}
+    <button class="btn" data-next>Continue</button>`;
+  app.querySelectorAll('.choice, .tile').forEach(b => b.disabled = true);
+  app.querySelector('.progress i').style.width = S.right / S.total * 100 + '%';
+  fb.querySelector('[data-next]').focus();
+  if (ok) speak(e.p[0]);
+}
+
+function next() {
+  S.pick = null; S.line = []; S.checked = false;
+  if (S.queue.length) return exercise();
+  const l = FLAT[S.i];
+  done.add(l.id); save();
+  const hasNext = S.i + 1 < FLAT.length;
+  app.innerHTML = `<div class="done-card">
+    <span class="label">Lesson complete</span><h2>उत्तमम्!</h2><p class="iast">uttamam · Excellent!</p>
+    <p class="stat">${l.phrases.length} phrases practised · ${S.mistakes} ${S.mistakes === 1 ? 'mistake' : 'mistakes'}</p>
+    <div class="row">${hasNext ? `<button class="btn" data-lesson="${S.i + 1}">Next lesson</button>` : ''}<button class="btn ghost" data-home>All chapters</button></div></div>`;
+}
+
+app.addEventListener('click', ev => {
+  const b = ev.target.closest('button'); if (!b) return;
+  const d = b.dataset;
+  if ('say' in d) return speak(d.say);
+  if ('home' in d) return home();
+  if ('lesson' in d) return intro(+d.lesson);
+  if ('start' in d) return start(+d.start);
+  if ('check' in d) return check();
+  if ('next' in d) return next();
+  if (S && !S.checked) {
+    if ('pick' in d) { S.pick = +d.pick; exercise() }
+    else if ('in' in d) { S.line.push(+d.in); exercise() }
+    else if ('out' in d) { S.line = S.line.filter(id => id !== +d.out); exercise() }
+  }
+});
+if (canSpeak) speechSynthesis.getVoices(); // voices load lazily in some browsers
+
+// Self-check: every generated exercise can be answered correctly.
+for (const l of FLAT) for (const e of makeExercises(l)) {
+  if (e.type === 'build') {
+    const line = words(e.p).map(x => e.tiles.find(t => t.w === x.w).id);
+    console.assert(isRight(e, { line }), 'build unsolvable', e.p[0]);
+    console.assert(new Set(e.tiles.map(t => t.w)).size === e.tiles.length, 'duplicate tile', e.p[0]);
+  } else {
+    console.assert(e.opts.length === 4 && isRight(e, { pick: e.opts.indexOf(e.p) }), 'bad options', e.p[0]);
+  }
+}
+home();
+</script>
