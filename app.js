@@ -127,7 +127,7 @@ function home() {
       <section class="chapter">
         <header><span class="label">Chapter ${ci + 1}</span><h2>${c.sa}</h2><span class="iast">${c.en}</span></header>
         <div class="lessons">${c.lessons.map(l => {
-          const i = n++, isDone = done.has(l.id), isNext = l === upNext;
+          const i = n++, isDone = done.has(l.id), isNext = l.id === upNext?.id;
           const cls = isDone ? 'done' : isNext ? 'next' : '';
           return `<button class="lesson ${cls}" data-lesson="${i}">
             <span class="dot">${isDone ? '✓' : i + 1}</span>
